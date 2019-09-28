@@ -1,8 +1,10 @@
 # Installation
 
 1.) Perform a git retrieve 
+
 2.) Install node modules used in project 
     `npm install`
+    
 3.) Run the Angular server
     `ng serve --open`
 
