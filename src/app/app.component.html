@@ -61,7 +61,7 @@
     display: flex;
     margin: 32px auto;
     padding: 0 16px;
-    max-width: 960px;
+    max-width: 1280px;
     flex-direction: column;
     align-items: center;
   }
@@ -369,7 +369,7 @@
     </div>
   </div>
 
-  <div style="height:48px;width:100%;margin-top:8px;margin-bottom:8px;">
+  <div style="height:48px;width:100%;margin-top:10px;">
     <span><p *ngIf="addedProductsMsg">
       <ngb-alert [dismissible]="false" type="success">
           {{ addedProductsMsg }}
@@ -387,19 +387,23 @@
     <h2>Products</h2>
     <div *ngIf="isRefreshing">Loading Products...</div>
     <div *ngIf="products">
-      <table>
-        <tr>
-          <th>Name</th>
-          <th>Price</th>
-          <th>Link</th>
-          <th>Added</th>
-        </tr>
-        <tr *ngFor="let product of products" [class.recently-added-product]="product.age < 1">
-          <td>{{ product.name.length > 64 ? product.name.substring(0, 64) + '...' : product.name }}</td>
-          <td>{{ SEARCHSETTINGS.currencySymbol }}{{ product.price }}</td>
-          <td><a href="{{ product.hyperlink }}">{{ product.hyperlink.substring(0, 40) + '...'}}</a></td>
-          <td>{{ product.createdDate |  date:'MM/dd/yyyy' }}</td>
-        </tr>
+      <table class="table table-sm">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Link</th>
+            <th>Added</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let product of products" [class.table-success]="product.age < 1">
+            <th scope="row">{{ product.name.length > 64 ? product.name.substring(0, 64) + '...' : product.name }}</th>
+            <td>{{ SEARCHSETTINGS.currencySymbol }}{{ product.price }}</td>
+            <td><a href="{{ product.hyperlink }}">{{ product.hyperlink.substring(0, 40) + '...'}}</a></td>
+            <td>{{ product.createdDate |  date:'MM/dd/yyyy' }}</td>
+          </tr>
+        </tbody>
       </table>
     </div>
   </div>

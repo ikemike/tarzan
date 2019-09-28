@@ -117,10 +117,10 @@ export class AppComponent {
     let newProducts = await this.retrievePageData();
 
     if (existingProducts) {
-      let existingProductKeys = existingProducts.map(product => product.name + product.price + product.url);
+      let existingProductKeys = existingProducts.map(product => product.name + product.price + product.hyperlink.substring(0, 20) );
 
       for (const product of newProducts) {
-        let newProductKey = product.name + product.price + product.url;
+        let newProductKey = product.name + product.price + product.hyperlink.substring(0, 20);
         if (!existingProductKeys.includes(newProductKey)) {
           newProductsList.push(product);
         }
