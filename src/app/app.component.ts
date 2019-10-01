@@ -118,10 +118,12 @@ export class AppComponent {
 
     if (existingProducts) {
       let existingProductKeys = existingProducts.map(product => product.name + product.price + product.hyperlink.substring(0, 20) );
+      let existingHyperlinks = existingProducts.map(product => product.hyperlink);
 
       for (const product of newProducts) {
         let newProductKey = product.name + product.price + product.hyperlink.substring(0, 20);
-        if (!existingProductKeys.includes(newProductKey)) {
+        
+        if (!existingProductKeys.includes(newProductKey) && !existingHyperlinks.includes(product.hyperlink)) {
           newProductsList.push(product);
         }
       }
