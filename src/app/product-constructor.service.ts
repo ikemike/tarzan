@@ -20,7 +20,8 @@ export class ProductConstructorService {
 
       let price = '';
       try {
-        price = element.querySelector(nbResponse.currencyClass).textContent.match(/\d+/)[0];
+        //price = element.querySelector(nbResponse.currencyClass).textContent.match(/\d+/)[0];
+        price = element.querySelector(nbResponse.currencyClass).textContent.replace(/\$|,/g,'');
       } catch (e) { }
       
       let hyperlink = element.querySelector('a') ? element.querySelector('a').href.replace('http://localhost:4200',websiteName) : '';

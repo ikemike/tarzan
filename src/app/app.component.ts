@@ -15,6 +15,8 @@ export class AppComponent {
   title = 'tarzan';
   SEARCHSETTINGS: any;
   VALIDATIONSETTINGS: any;
+  SITESTOREVIEW: any;
+
   httpDomService;
   nodeProcessorService;
   productConstructorService;
@@ -27,12 +29,13 @@ export class AppComponent {
   isRefreshing: Boolean;
   addedProductsMsg: string;
   statusMsg: string;
-
+  
   
 
   constructor() {
     this.SEARCHSETTINGS = new TarzanConfig().searchSettings;
     this.VALIDATIONSETTINGS = new TarzanConfig().validationSettings;
+    this.SITESTOREVIEW = new TarzanConfig().sitesToReview;
 
     this.httpDomService = new HttpdomService();
     this.nodeProcessorService = new NodeProcessorService();
@@ -48,6 +51,7 @@ export class AppComponent {
     setInterval(()=>this.refreshProducts(), 1200000);
   }
 
+
   /**
    * 1. Performs an initial HTTP callout to the website, saving the returned HTML document
    * 2. Performs simple node identification based on element content like price
@@ -56,12 +60,11 @@ export class AppComponent {
   public async retrievePageData() {
     this.lastUpdated = new Date();
     let newProducts = [];
-
-    newProducts = newProducts.concat(await this.getProductsFromSite(`https://www.ebay.com/sch/i.html?_nkw=${encodeURI(this.SEARCHSETTINGS.productName)}&_stpos=${this.SEARCHSETTINGS.localZip}&_sadis=${this.SEARCHSETTINGS.maxDistance}&_fspt=1`));
-    newProducts = newProducts.concat(await this.getProductsFromSite(`https://mobile.facebook.com/marketplace/${this.SEARCHSETTINGS.city}/?radius_in_km=17&query=${encodeURI(this.SEARCHSETTINGS.productName)}`));
-    newProducts = newProducts.concat(await this.getProductsFromSite(`https://${this.SEARCHSETTINGS.city}.craigslist.org/search/sss?query=${encodeURI(this.SEARCHSETTINGS.productName)}&sort=rel`));
-    newProducts = newProducts.concat(await this.getProductsFromSite(`https://www.bestbuy.com/site/searchpage.jsp?st=${encodeURI(this.SEARCHSETTINGS.productName)}`));
     
+    // Loop through each site, configured in tarzan-config.ts 
+    for (const site of this.SITESTOREVIEW) {
+      newProducts = newProducts.concat(await this.getProductsFromSite(site));
+    }
     newProducts = newProducts.sort((a, b) => (a.price > b.price) ? 1 : -1);
 
     return newProducts;
@@ -75,11 +78,11 @@ export class AppComponent {
   public async getProductsFromSite(website: string) {
     let siteDom = await this.httpDomService.getDocument(website);                             // 1. Peform an HTTP callout to the website
     let processedNodeData = this.nodeProcessorService.performNodeIdentification(siteDom);     // 2. Analyze the website DOM and conduct simple node identification for product name, price, and container 
+    console.log(processedNodeData);
     let products = this.productConstructorService.buildProducts(processedNodeData, siteDom, website);  // 3. Construct products based on the nodes identified
+    console.log(products);
     let validatedProducts = await this.productValidatorService.validateProducts(products);          // 4. Process each product and make sure it meets defined criteria
-    
     this.statusMsg = `Validated: ${validatedProducts.length}/${products.length} products from ${website}`;
-    
     return validatedProducts;
   }
 
@@ -89,11 +92,10 @@ export class AppComponent {
    */
   public async refreshProducts() {
     console.log('Refreshing Products...');
-    this.addedProductsMsg = null;
-    this.isRefreshing = true;
-    this.statusMsg = 'Refreshing Products...';
+    this.addedProductsMsg = null, this.isRefreshing = true, this.statusMsg = 'Refreshing Products...';
+
     let existingProducts = this.localStorageService.getProductsFromStorage();
-    let newProducts = await this.getNewProducts();
+    let newProducts = await this.getNewProducts();  // A list of new products, not previously saved 
     if (newProducts.length > 0) this.addedProductsMsg = 'Added ' + newProducts.length + ' New Product(s)!';
 
     this.products =  existingProducts ? existingProducts.concat(newProducts) : newProducts;
@@ -131,14 +133,5 @@ export class AppComponent {
     } 
     return newProducts;
   }
-
-  public generateTestProducts() {
-    return [{name: 'test product', price: '500', hyperlink: '', query: ''}];
-  }
-
-  
-
-
-
 
 }

@@ -6,9 +6,11 @@ import { TarzanConfig } from './tarzan-config';
 })
 export class NodeProcessorService {
   SEARCHSETTINGS: any;
+  VALIDATIONSETTINGS: any;
 
   constructor() { 
     this.SEARCHSETTINGS = new TarzanConfig().searchSettings; 
+    this.VALIDATIONSETTINGS = new TarzanConfig().validationSettings; 
   }
 
 
@@ -39,13 +41,11 @@ export class NodeProcessorService {
   public findProductClassName(elementsToSearchThrough: any): String {
     let productNameElementsIdentified = [];
     for (const element of elementsToSearchThrough) {
-
-      if (element.textContent.includes(this.SEARCHSETTINGS.productName.split(" ")[0])) { // Ensure the element contains at least the first word of the product name
-        let individualWordMatches = this.nodeTextMatchAsNumber(element, this.SEARCHSETTINGS.productName)
-        if (individualWordMatches > 0) {
-          productNameElementsIdentified.push(element);
-        } 
-      }
+      //if (element.textContent.toLowerCase().includes(this.VALIDATIONSETTINGS.productMustContainWord.toLowerCase())) {  
+      let individualWordMatches = this.nodeTextMatchAsNumber(element, this.VALIDATIONSETTINGS.productMustContainAtLeastOneWord)
+      if (individualWordMatches > 0) {
+        productNameElementsIdentified.push(element);
+      } 
     }
 
     return this.getMostCommonClassName(productNameElementsIdentified);
@@ -102,7 +102,7 @@ export class NodeProcessorService {
 
     let startingNode; 
     for (const element of startingElements) {
-      if (element.textContent.includes(this.SEARCHSETTINGS.productName) || element.textContent.includes(this.SEARCHSETTINGS.currencySymbol)) {
+      if (element.textContent.toLowerCase().includes(this.VALIDATIONSETTINGS.productMustContainWord.toLowerCase()) || element.textContent.includes(this.SEARCHSETTINGS.currencySymbol)) {
         startingNode = element;
         continue;
       }
@@ -131,11 +131,10 @@ export class NodeProcessorService {
    * @param element 
    * @param searchText  
    */
-  public nodeTextMatchAsNumber(element:any, searchText: String): Number {
+  public nodeTextMatchAsNumber(element:any, productWordsToFind: Array<String>): Number {
     let wordMatches = 0;
-    let searchTextAsArrayOfWords = searchText.split(" ");
-    for (const word of searchTextAsArrayOfWords) {
-      if (element.textContent.includes(word)) {
+    for (const word of productWordsToFind) {
+      if (element.textContent.toLowerCase().includes(word.toLowerCase())) {
         wordMatches++;
       }
     }
