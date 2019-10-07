@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { TarzanConfig } from './tarzan-config';
+import { TarzanConfig } from '../tarzan-config';
 
 @Injectable({
   providedIn: 'root'

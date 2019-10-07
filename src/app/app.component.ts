@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpdomService } from './httpdom.service';
-import { NodeProcessorService } from './node-processor.service';
-import { ProductConstructorService } from './product-constructor.service';
-import { ProductValidatorService } from './product-validator.service';
-import { LocalStorageService } from './local-storage.service';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { HttpdomService } from './services/httpdom.service';
+import { NodeProcessorService } from './services/node-processor.service';
+import { ProductConstructorService } from './services/product-constructor.service';
+import { ProductValidatorService } from './services/product-validator.service';
+import { LocalStorageService } from './services/local-storage.service';
 import { TarzanConfig } from './tarzan-config';
+
+// Child Component Imports
+import { ProductConfigComponent } from './product-config/product-config.component';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +15,8 @@ import { TarzanConfig } from './tarzan-config';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+
+
   title = 'tarzan';
   SEARCHSETTINGS: any;
   VALIDATIONSETTINGS: any;
@@ -29,8 +34,7 @@ export class AppComponent {
   isRefreshing: Boolean;
   addedProductsMsg: string;
   statusMsg: string;
-  
-  
+  editingConfig: Boolean; // Show/Hide Config Component
 
   constructor() {
     this.SEARCHSETTINGS = new TarzanConfig().searchSettings;
@@ -49,6 +53,11 @@ export class AppComponent {
     this.products = this.localStorageService.getProductsFromStorage();
     this.lastUpdated = this.localStorageService.getLastUpdatedDate();
     setInterval(()=>this.refreshProducts(), 1200000);
+  }
+
+  handleEditingConfigEvent($event) {
+    console.log($event);
+    this.editingConfig = $event;
   }
 
 

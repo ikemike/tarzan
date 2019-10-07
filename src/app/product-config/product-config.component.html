@@ -1,0 +1,92 @@
+
+<form *ngIf="addingNew || editingExisting" class="minor-margin">
+
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="name">Product Name</label>
+            <input type="text" class="form-control" placeholder="Product Name" id="name"  name="name" [(ngModel)]="newConfig.name">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="name2">Must Contain The Word</label>
+            <input type="text" class="form-control" placeholder="Must Contain Word" id="name2" name="name2" [(ngModel)]="newConfig.must_contain">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            <label for="name3">Must Contain One Word</label>
+            <input type="text" class="form-control" placeholder="Must Contain At Least One Word" id="name3" name="name3" [(ngModel)]="newConfig.must_contain_one">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="city">City</label>
+            <input type="text" class="form-control" placeholder="City" id="city" name="city" [(ngModel)]="newConfig.city">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="zip">Zip</label>
+            <input type="text" class="form-control" placeholder="Zip" id="zip" name="zip" [(ngModel)]="newConfig.zip">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="distance">Distance</label>
+            <input type="text" class="form-control" placeholder="Distance" id="distance" name="distance" [(ngModel)]="newConfig.distance">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="low">Low</label>
+            <input type="text" class="form-control" placeholder="Low" id="low" name="low" [(ngModel)]="newConfig.low">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="high">High</label>
+            <input type="text" class="form-control" placeholder="High" id="high" name="high" [(ngModel)]="newConfig.high">
+        </div>
+    </div>
+    <div class="form-row minor-margin">
+        <div class="form-group col-md-4">
+            <button (click)="saveConfig()" *ngIf="addingNew" class="btn btn-primary">Add</button>
+            <button (click)="saveConfig()" *ngIf="editingExisting" class="btn btn-outline-primary">Save</button>
+        </div>
+    </div>
+</form>
+
+
+
+<h2>Configuration</h2><br><br>
+<button (click)="createNewConfigAction()" class="btn btn-primary minor-margin" *ngIf="!addingNew && !editingExisting">+</button>
+<br>
+<div *ngIf="searchConfigs">
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Must Contain</th>
+                <th>Must Contain One</th>
+                <th>City</th>
+                <th>Zip</th>
+                <th>Distance</th>
+                <th>Low</th>
+                <th>High</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let config of searchConfigs">
+                <th scope="row">{{config.name}}</th>
+                <td>{{config.must_contain}}</td>
+                <td>{{config.must_contain_one}}</td>
+                <td>{{config.city}}</td>
+                <td>{{config.zip}}</td>
+                <td>{{config.distance}}</td>
+                <td>{{config.low}}</td>
+                <td>{{config.high}}</td>
+                <td><button (click)="edit(config)" class="btn btn-link">Edit</button></td>
+                <td><button (click)="remove(config)" class="btn btn-link">Remove</button></td>
+            </tr>
+      </tbody>
+    </table>
+  </div>
+
+<button (click)="exitConfigMenu()" class="btn btn-link">Back</button>
