@@ -21,7 +21,7 @@ export class ProductValidatorService {
     for (const product of products) {
 
       let priceValid: boolean = product.price >= this.VALIDATIONSETTINGS.validLowPrice && product.price <= this.VALIDATIONSETTINGS.validHighPrice && product.price != '';
-      
+
       let productContainsAtLeastOnePredefinedWord = false;
       for (const word of this.VALIDATIONSETTINGS.productMustContainAtLeastOneWord) {
         if (product.name.toLowerCase().includes(word.toLowerCase())) {
@@ -29,7 +29,8 @@ export class ProductValidatorService {
           continue;
         }
       }
-      let productContainsRequiredWord = product.name.toLowerCase().includes(this.VALIDATIONSETTINGS.productMustContainWord);
+      
+      let productContainsRequiredWord = product.name.toLowerCase().includes(this.VALIDATIONSETTINGS.productMustContainWord.toLowerCase());
 
       let productDistanceValid: boolean = product.distance != '' ? this.VALIDATIONSETTINGS.maxDistance >= product.distance.replace(',','').match(/\d+/)[0]
         : product.distance == '' && product.hyperlink.includes('ebay') ? false : true;

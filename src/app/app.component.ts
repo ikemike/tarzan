@@ -78,7 +78,9 @@ export class AppComponent {
   public async getProductsFromSite(website: string) {
     let siteDom = await this.httpDomService.getDocument(website);                             // 1. Peform an HTTP callout to the website
     let processedNodeData = this.nodeProcessorService.performNodeIdentification(siteDom);     // 2. Analyze the website DOM and conduct simple node identification for product name, price, and container 
+    //console.log(processedNodeData);
     let products = this.productConstructorService.buildProducts(processedNodeData, siteDom, website);  // 3. Construct products based on the nodes identified
+    //console.log(products);
     let validatedProducts = await this.productValidatorService.validateProducts(products);          // 4. Process each product and make sure it meets defined criteria
     this.statusMsg = `Validated: ${validatedProducts.length}/${products.length} products from ${website}`;
     return validatedProducts;

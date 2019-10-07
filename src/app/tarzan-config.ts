@@ -1,6 +1,24 @@
 export class TarzanConfig {
-    
+    /*
     searchSettings = {
+        productName:      'Oculus Quest',
+        currencySymbol:   '$',
+        city:             'minneapolis',    // Your city : Used in FB Marketplace queries 
+        localZip:         '55404',      // Your local zip code. Used in Ebay queries. 
+        maxDistance:      '60'          // How close the product has to be (in miles). Used in Ebay queries. 
+      };
+      
+      validationSettings = {
+        productMustContainWord: 'Oculus',
+        productMustContainAtLeastOneWord: ['Quest'],
+        validLowPrice: 100,
+        validHighPrice: 1000, 
+        maxDistance: parseInt(this.searchSettings.maxDistance)
+      };
+      */
+      
+     
+      searchSettings = {
         productName:      'Note 10',
         currencySymbol:   '$',
         city:             'madison',    // Your city : Used in FB Marketplace queries 
@@ -15,6 +33,7 @@ export class TarzanConfig {
         validHighPrice: 1000, 
         maxDistance: parseInt(this.searchSettings.maxDistance)
       };
+    
     /*
     searchSettings = {
       productName:      'Nanoleaf',
@@ -39,6 +58,7 @@ export class TarzanConfig {
         //,`https://www.bestbuy.com/site/searchpage.jsp?st=${encodeURI(this.searchSettings.productName)}`
         //,`https://www.walmart.com/search/?cat_id=0&query=${encodeURI(this.searchSettings.productName)}`
         //,`https://us.letgo.com/en/scl/wisconsin/dane-county/${this.searchSettings.city}?searchTerm=${encodeURI(this.searchSettings.productName)}&price[min]=${this.validationSettings.validLowPrice}&price[max]=${this.validationSettings.validHighPrice}`
+        //,`https://www.amazon.com/gp/offer-listing/B07W7VSLMT/ref=olp_twister_all?ie=UTF8&mv_color_name=all&mv_size_name=all&mv_style_name=all`
       ]
 
 
