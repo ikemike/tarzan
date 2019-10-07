@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TarzanConfig } from '../tarzan-config';
+import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -7,10 +8,12 @@ import { TarzanConfig } from '../tarzan-config';
 export class NodeProcessorService {
   SEARCHSETTINGS: any;
   VALIDATIONSETTINGS: any;
+  SEARCHCONFIGS: any;
 
   constructor() { 
     this.SEARCHSETTINGS = new TarzanConfig().searchSettings; 
-    this.VALIDATIONSETTINGS = new TarzanConfig().validationSettings; 
+    this.VALIDATIONSETTINGS = new TarzanConfig().validationSettings;
+    //this.SEARCHCONFIGS = new LocalStorageService().getSearchConfigs();
   }
 
 

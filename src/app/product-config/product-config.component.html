@@ -1,6 +1,9 @@
 
-<form *ngIf="addingNew || editingExisting" class="minor-margin">
+<div style="position:absolute;right:48px;top:8px;">
+    <button (click)="exitConfigMenu()" class="btn btn-outline-light">Back to Products</button>
+</div>
 
+<form *ngIf="addingNew || editingExisting" class="minor-margin card card-body">
     <div class="form-row">
         <div class="form-group col-md-6">
             <label for="name">Product Name</label>
@@ -35,6 +38,10 @@
     </div>
     <div class="form-row">
         <div class="form-group col-md-4">
+            <label for="currency">Currency</label>
+            <input type="text" class="form-control" placeholder="$/€/£..." id="currency" name="currency" [(ngModel)]="newConfig.currencySymbol">
+        </div>
+        <div class="form-group col-md-4">
             <label for="low">Low</label>
             <input type="text" class="form-control" placeholder="Low" id="low" name="low" [(ngModel)]="newConfig.low">
         </div>
@@ -45,21 +52,20 @@
     </div>
     <div class="form-row minor-margin">
         <div class="form-group col-md-4">
-            <button (click)="saveConfig()" *ngIf="addingNew" class="btn btn-primary">Add</button>
-            <button (click)="saveConfig()" *ngIf="editingExisting" class="btn btn-outline-primary">Save</button>
+            <button (click)="saveConfig()" *ngIf="addingNew || editingExisting" class="btn btn-outline-primary">Save</button>
+            <button (click)="addingNew=false;editingExisting=false;this.newConfig = {};" *ngIf="addingNew || editingExisting" class="btn btn-link">Cancel</button>
         </div>
     </div>
 </form>
 
+<button (click)="createNewConfigAction()" class="btn btn-primary minor-margin" *ngIf="!addingNew && !editingExisting">Create a New Configuration</button>
 
-
-<h2>Configuration</h2><br><br>
-<button (click)="createNewConfigAction()" class="btn btn-primary minor-margin" *ngIf="!addingNew && !editingExisting">+</button>
-<br>
+<h2 *ngIf="searchConfigs">Current Configuration</h2>
 <div *ngIf="searchConfigs">
     <table class="table table-sm">
         <thead>
             <tr>
+                <th>Active</th>
                 <th>Name</th>
                 <th>Must Contain</th>
                 <th>Must Contain One</th>
@@ -74,19 +80,25 @@
         </thead>
         <tbody>
             <tr *ngFor="let config of searchConfigs">
-                <th scope="row">{{config.name}}</th>
-                <td>{{config.must_contain}}</td>
-                <td>{{config.must_contain_one}}</td>
-                <td>{{config.city}}</td>
-                <td>{{config.zip}}</td>
-                <td>{{config.distance}}</td>
-                <td>{{config.low}}</td>
-                <td>{{config.high}}</td>
-                <td><button (click)="edit(config)" class="btn btn-link">Edit</button></td>
-                <td><button (click)="remove(config)" class="btn btn-link">Remove</button></td>
+                <td class="align-middle" style="width:100px;">
+                    <button style="font-size:8pt;" *ngIf="config.active" (click)="deactivate(config)" class="activate-button btn btn-success">
+                        <span>Active</span>
+                    </button>
+                    <button style="font-size:8pt;" *ngIf="!config.active" (click)="activate(config)" class="deactivate-button btn btn-outline-success">
+                        <span>Inactive</span>
+                    </button>
+                </td>
+                <th scope="row" class="align-middle">{{config.name}}</th>
+                <td class="align-middle">{{config.must_contain}}</td>
+                <td class="align-middle">{{config.must_contain_one}}</td>
+                <td class="align-middle">{{config.city}}</td>
+                <td class="align-middle">{{config.zip}}</td>
+                <td class="align-middle">{{config.distance}}</td>
+                <td class="align-middle">{{config.low}}</td>
+                <td class="align-middle">{{config.high}}</td>
+                <td class="align-middle"><button style="font-size:8pt;" (click)="edit(config)" class="btn btn-outline-success">Edit</button></td>
+                <td class="align-middle"><button style="font-size:8pt;" (click)="remove(config)" class="btn btn-outline-danger">Remove</button></td>
             </tr>
       </tbody>
     </table>
-  </div>
-
-<button (click)="exitConfigMenu()" class="btn btn-link">Back</button>
+</div>

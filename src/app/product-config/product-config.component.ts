@@ -29,15 +29,15 @@ export class ProductConfigComponent implements OnInit {
     // Retrieve current config settings from local storage
     this.searchConfigs = new LocalStorageService().getSearchConfigs();
     this.newConfig = {};
+    this.sortEntries();
   }
 
   /**
    * Called via on-click action on the page. Adds a new configuration setting. 
    */
   saveConfig() {
-    this.searchConfigs = this.searchConfigs.filter(config => config != this.newConfig); // If the config option previously existed, remove it
-
     if (this.searchConfigs) {
+      this.searchConfigs = this.searchConfigs.filter(config => config != this.newConfig); // If the config option previously existed, remove it
       this.searchConfigs = this.searchConfigs.concat(this.newConfig);
     } else {
       this.searchConfigs = [this.newConfig];
@@ -45,6 +45,7 @@ export class ProductConfigComponent implements OnInit {
     new LocalStorageService().setSearchConfigs(this.searchConfigs);
     this.newConfig = {};
     this.addingNew = false, this.editingExisting = false;
+    this.sortEntries();
   }
 
   /**
@@ -62,6 +63,26 @@ export class ProductConfigComponent implements OnInit {
 
   createNewConfigAction() {
     this.addingNew = true;
+  }
+
+  activate(configSetting: any) {
+    configSetting.active = true;
+    this.searchConfigs = this.searchConfigs.filter(config => config != configSetting);
+    this.searchConfigs = this.searchConfigs.concat(configSetting);
+    new LocalStorageService().setSearchConfigs(this.searchConfigs);
+    this.sortEntries();
+  }
+
+  deactivate(configSetting: any) {
+    configSetting.active = false;
+    this.searchConfigs = this.searchConfigs.filter(config => config != configSetting);
+    this.searchConfigs = this.searchConfigs.concat(configSetting);
+    new LocalStorageService().setSearchConfigs(this.searchConfigs);
+    this.sortEntries();
+  }
+
+  sortEntries() {
+    this.searchConfigs = this.searchConfigs.sort((a, b) => (a.name > b.name) ? 1 : -1);
   }
 
   @Output() handleSaveEvent = new EventEmitter<boolean>();

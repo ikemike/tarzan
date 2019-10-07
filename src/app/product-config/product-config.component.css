@@ -2,3 +2,8 @@
     margin-top: 10px;
     margin-bottom:10px;
 }
+
+.activate-button:hover span {display:none} 
+.activate-button:hover:before {content:"Deactivate"; width:100px;}
+.deactivate-button:hover span {display:none} 
+.deactivate-button:hover:before {content:"Activate";width:100px}
