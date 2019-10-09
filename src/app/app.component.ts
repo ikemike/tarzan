@@ -1,10 +1,7 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { HttpdomService } from './services/httpdom.service';
-import { NodeProcessorService } from './services/node-processor.service';
-import { ProductConstructorService } from './services/product-constructor.service';
-import { ProductValidatorService } from './services/product-validator.service';
 import { LocalStorageService } from './services/local-storage.service';
-import { TarzanConfig } from './tarzan-config';
+import { SitesConfigService } from './services/sites-config.service';
+import { ProductRetrieverService } from './services/product-retriever.service';
 
 // Child Component Imports
 import { ProductConfigComponent } from './product-config/product-config.component';
@@ -37,22 +34,22 @@ export class AppComponent {
   editingConfig: Boolean; // Show/Hide Config Component
 
   constructor() {
-    this.SEARCHSETTINGS = new TarzanConfig().searchSettings;
-    this.VALIDATIONSETTINGS = new TarzanConfig().validationSettings;
-    this.SITESTOREVIEW = new TarzanConfig().sitesToReview;
-
+    /*
     this.httpDomService = new HttpdomService();
     this.nodeProcessorService = new NodeProcessorService();
     this.productConstructorService = new ProductConstructorService();
     this.productValidatorService = new ProductValidatorService();
     this.localStorageService = new LocalStorageService();
+    */
   }
 
   async ngOnInit() {
+    /*
     this.products = [];
     this.products = this.localStorageService.getProductsFromStorage();
     this.lastUpdated = this.localStorageService.getLastUpdatedDate();
     setInterval(()=>this.refreshProducts(), 1200000);
+    */
   }
 
   handleEditingConfigEvent($event) {
@@ -67,6 +64,7 @@ export class AppComponent {
    * 3. Construct a JSON representation of the 
    */
   public async retrievePageData() {
+    /*
     this.lastUpdated = new Date();
     let newProducts = [];
     
@@ -77,6 +75,7 @@ export class AppComponent {
     newProducts = newProducts.sort((a, b) => (a.price > b.price) ? 1 : -1);
 
     return newProducts;
+    */
   }
 
 
@@ -85,6 +84,7 @@ export class AppComponent {
    * @param website A website URL
    */
   public async getProductsFromSite(website: string) {
+    /*
     let siteDom = await this.httpDomService.getDocument(website);                             // 1. Peform an HTTP callout to the website
     let processedNodeData = this.nodeProcessorService.performNodeIdentification(siteDom);     // 2. Analyze the website DOM and conduct simple node identification for product name, price, and container 
     //console.log(processedNodeData);
@@ -93,6 +93,7 @@ export class AppComponent {
     let validatedProducts = await this.productValidatorService.validateProducts(products);          // 4. Process each product and make sure it meets defined criteria
     this.statusMsg = `Validated: ${validatedProducts.length}/${products.length} products from ${website}`;
     return validatedProducts;
+    */
   }
 
   /**
@@ -100,6 +101,7 @@ export class AppComponent {
    * Initiates data retrieval 
    */
   public async refreshProducts() {
+    /*
     console.log('Refreshing Products...');
     this.addedProductsMsg = null, this.isRefreshing = true, this.statusMsg = 'Refreshing Products...';
 
@@ -115,6 +117,28 @@ export class AppComponent {
 
     this.statusMsg = null;
     this.isRefreshing = false;
+    */
+
+    this.addedProductsMsg = null, this.isRefreshing = true, this.statusMsg = 'Refreshing Products...';
+    let newlyRetrievedProducts = [];
+    // For each configured product, do a product retrieval 
+    try {
+
+      for (const searchConfig of new LocalStorageService().getActiveSearchConfigs()) {
+        let retrievedProducts = await new ProductRetrieverService().retrieveProducts(searchConfig, new SitesConfigService(searchConfig).getSitesToReview() );
+        newlyRetrievedProducts = newlyRetrievedProducts.concat(retrievedProducts);
+        this.addedProductsMsg = 'Added ' + newlyRetrievedProducts.length + ' New Products!'
+      }
+      console.log(newlyRetrievedProducts);
+      this.addedProductsMsg = null, this.isRefreshing = false, this.statusMsg = null;
+      this.products = newlyRetrievedProducts.sort((a, b) => (a.price > b.price) ? 1 : -1);
+       //this.localStorageService.storeData(newlyRetrievedProducts);
+
+    } catch (exception) {
+      console.log(exception.message);
+      this.addedProductsMsg = null, this.isRefreshing = false, this.statusMsg = 'Exception: ' + exception.message + ' | Check console log for details';
+    }
+
   }
 
   /**
@@ -123,6 +147,7 @@ export class AppComponent {
   * @returns  new products
   */
   public async getNewProducts() {
+    /*
     let newProductsList = [];
     let existingProducts = this.localStorageService.getProductsFromStorage();
     let newProducts = await this.retrievePageData();
@@ -141,6 +166,8 @@ export class AppComponent {
       return newProductsList;
     } 
     return newProducts;
+    */
   }
+  
 
 }

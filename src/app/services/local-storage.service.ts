@@ -30,4 +30,8 @@ export class LocalStorageService {
   public getSearchConfigs() {
     return JSON.parse(window.localStorage.getItem('search-config'));
   }
+
+  public getActiveSearchConfigs() {
+    return this.getSearchConfigs().filter(aConfig => aConfig.active); 
+  }
 }

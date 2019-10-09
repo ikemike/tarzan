@@ -5,7 +5,11 @@ import { Injectable } from '@angular/core';
 })
 export class ProductConstructorService {
 
-  constructor() { }
+  PRODUCTCONFIG: any;
+
+  constructor(productConfig: any) { 
+    this.PRODUCTCONFIG = productConfig;
+  }
 
   // nB = Data constructed from Node Builder.
   public buildProducts(nbResponse: any, documentData: any, websiteUrl: string): any {
@@ -27,25 +31,14 @@ export class ProductConstructorService {
       let hyperlink = element.querySelector('a') ? element.querySelector('a').href.replace('http://localhost:4200',websiteName) : '';
       let distance = element.querySelector(nbResponse.ebayDistanceClass) ? element.querySelector(nbResponse.ebayDistanceClass).textContent.replace(',','').match(/\d+/)[0] : '';
 
-      //let constructedDate = new Date();
-      //let formattedDateString;
-      //constructedDate.setDate(constructedDate.getDate());
-      /*
-      formattedDateString =
-        constructedDate.getFullYear() + '-'
-        + ('0' + (constructedDate.getMonth()+1)).slice(-2) + '-'
-        + ('0' + constructedDate.getDate()).slice(-2) + ' '
-        + ('0' + constructedDate.getHours()).slice(-2) + ':'
-        + ('0' + constructedDate.getMinutes()).slice(-2) + ':'
-        + ('0' + constructedDate.getSeconds()).slice(-2);
-      */
       constructedProducts.push({
         name: name,
         price: price,
         hyperlink: hyperlink,
         distance: distance,
         query: websiteUrl,
-        createdDate: new Date()
+        createdDate: new Date(),
+        configUsed: this.PRODUCTCONFIG
       });
     }
     return constructedProducts;

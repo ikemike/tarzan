@@ -108,7 +108,7 @@
           <tbody>
             <tr *ngFor="let product of products" [class.table-success]="product.age < 1">
               <th scope="row" title="{{product.name}}">{{ product.name.length > 86 ? product.name.substring(0, 86) + '...' : product.name }}</th>
-              <td>{{ SEARCHSETTINGS.currencySymbol }}{{ product.price }}</td>
+              <td>${{ product.price }}</td>
               <td><a href="{{ product.hyperlink }}">{{ product.hyperlink.substring(0, 40) + '...'}}</a></td>
               <td>{{ product.createdDate |  date:'MM/dd/yyyy' }}</td>
             </tr>

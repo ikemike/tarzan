@@ -16,14 +16,16 @@ export class ProductConfigComponent implements OnInit {
   editingExisting: Boolean;
 
   // Properties of newConfig Object
-  name;
-  must_contain;
-  must_contain_one;
+  id;
+  productName;
+  productNameMustContainWord;
+  productNameMustContainAtLeastOneWordFrom;
+  productNameMustContainAtLeastOneWordFromString;
   city;
-  zip;
-  distance;
-  low;
-  high;
+  localZip;
+  maxDistance;
+  validLowPrice;
+  validHighPrice;
 
   ngOnInit() {
     // Retrieve current config settings from local storage
@@ -36,10 +38,20 @@ export class ProductConfigComponent implements OnInit {
    * Called via on-click action on the page. Adds a new configuration setting. 
    */
   saveConfig() {
+
+    // Modify the user-provided setting as needed
+    this.newConfig.productNameMustContainAtLeastOneWordFrom = this.newConfig.productNameMustContainAtLeastOneWordFromString.split(',').map(word => word.trim());
+    this.newConfig.validHighPrice = parseFloat(this.newConfig.validHighPrice); 
+    this.newConfig.validLowPrice = parseFloat(this.newConfig.validLowPrice); 
+    this.newConfig.maxDistance = parseFloat(this.newConfig.maxDistance); 
+    this.newConfig.localZip = parseFloat(this.newConfig.localZip); 
+
     if (this.searchConfigs) {
       this.searchConfigs = this.searchConfigs.filter(config => config != this.newConfig); // If the config option previously existed, remove it
+      this.newConfig.id = this.searchConfigs.length + 1;
       this.searchConfigs = this.searchConfigs.concat(this.newConfig);
     } else {
+      this.newConfig.id = 1;
       this.searchConfigs = [this.newConfig];
     }
     new LocalStorageService().setSearchConfigs(this.searchConfigs);
@@ -59,6 +71,23 @@ export class ProductConfigComponent implements OnInit {
   remove(configSetting: any) {
     this.searchConfigs = this.searchConfigs.filter(config => config != configSetting);
     new LocalStorageService().setSearchConfigs(this.searchConfigs); // Update local-storage 
+    this.sortEntries();
+  }
+
+  clone(configSetting: any) {
+    let newSetting = { 
+      id: this.searchConfigs.length + 1, productName: configSetting.productName
+      , productNameMustContainWord: configSetting.productNameMustContainWord
+      , productNameMustContainAtLeastOneWordFrom: configSetting.productNameMustContainAtLeastOneWordFrom
+      , productNameMustContainAtLeastOneWordFromString: configSetting.productNameMustContainAtLeastOneWordFromString
+      , maxDistance: configSetting.maxDistance, currencySymbol: configSetting.currencySymbol 
+      , city: configSetting.city, localZip: configSetting.localZip, validLowPrice: configSetting.validLowPrice
+      , validHighPrice: configSetting.validHighPrice
+    };
+
+    this.searchConfigs = this.searchConfigs.concat(newSetting);
+    new LocalStorageService().setSearchConfigs(this.searchConfigs); // Update local-storage 
+    this.sortEntries();
   }
 
   createNewConfigAction() {
@@ -82,7 +111,12 @@ export class ProductConfigComponent implements OnInit {
   }
 
   sortEntries() {
-    this.searchConfigs = this.searchConfigs.sort((a, b) => (a.name > b.name) ? 1 : -1);
+    this.searchConfigs = this.searchConfigs.sort((a, b) => 
+      (a.productName < b.productName) ? 1 : -1
+    );
+    this.searchConfigs = this.searchConfigs.sort((a, b) => 
+      (!a.active && b.active) ? 1 : -1
+    );
   }
 
   @Output() handleSaveEvent = new EventEmitter<boolean>();

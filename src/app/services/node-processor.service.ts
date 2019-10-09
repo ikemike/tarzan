@@ -6,14 +6,11 @@ import { LocalStorageService } from './local-storage.service';
   providedIn: 'root'
 })
 export class NodeProcessorService {
-  SEARCHSETTINGS: any;
-  VALIDATIONSETTINGS: any;
-  SEARCHCONFIGS: any;
 
-  constructor() { 
-    this.SEARCHSETTINGS = new TarzanConfig().searchSettings; 
-    this.VALIDATIONSETTINGS = new TarzanConfig().validationSettings;
-    //this.SEARCHCONFIGS = new LocalStorageService().getSearchConfigs();
+  PRODUCTCONFIG: any;
+
+  constructor(productConfig: any) { 
+    this.PRODUCTCONFIG = productConfig;
   }
 
 
@@ -44,8 +41,7 @@ export class NodeProcessorService {
   public findProductClassName(elementsToSearchThrough: any): String {
     let productNameElementsIdentified = [];
     for (const element of elementsToSearchThrough) {
-      //if (element.textContent.toLowerCase().includes(this.VALIDATIONSETTINGS.productMustContainWord.toLowerCase())) {  
-      let individualWordMatches = this.nodeTextMatchAsNumber(element, this.VALIDATIONSETTINGS.productMustContainAtLeastOneWord)
+      let individualWordMatches = this.nodeTextMatchAsNumber(element, this.PRODUCTCONFIG.productNameMustContainAtLeastOneWordFrom)
       if (individualWordMatches > 0) {
         productNameElementsIdentified.push(element);
       } 
@@ -57,7 +53,7 @@ export class NodeProcessorService {
   public findCurrencyClassName(elementsToSearchThrough: any): String {
     let currencyElementsIdentified = [];
     for (const element of elementsToSearchThrough) {
-      if (element.textContent.includes(this.SEARCHSETTINGS.currencySymbol)) {
+      if (element.textContent.includes(this.PRODUCTCONFIG.currencySymbol)) {
         let digits = element.textContent.replace(/^\D+/g, '');
         
         if (digits.length > 0 && digits.length <= 6) { 
@@ -105,7 +101,7 @@ export class NodeProcessorService {
 
     let startingNode; 
     for (const element of startingElements) {
-      if (element.textContent.toLowerCase().includes(this.VALIDATIONSETTINGS.productMustContainWord.toLowerCase()) || element.textContent.includes(this.SEARCHSETTINGS.currencySymbol)) {
+      if (element.textContent.toLowerCase().includes(this.PRODUCTCONFIG.productNameMustContainWord.toLowerCase()) || element.textContent.includes(this.PRODUCTCONFIG.currencySymbol)) {
         startingNode = element;
         continue;
       }

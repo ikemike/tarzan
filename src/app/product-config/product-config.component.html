@@ -7,19 +7,19 @@
     <div class="form-row">
         <div class="form-group col-md-6">
             <label for="name">Product Name</label>
-            <input type="text" class="form-control" placeholder="Product Name" id="name"  name="name" [(ngModel)]="newConfig.name">
+            <input type="text" class="form-control" placeholder="Product Name" id="name"  name="name" [(ngModel)]="newConfig.productName">
         </div>
     </div>
     <div class="form-row">
         <div class="form-group col-md-6">
             <label for="name2">Must Contain The Word</label>
-            <input type="text" class="form-control" placeholder="Must Contain Word" id="name2" name="name2" [(ngModel)]="newConfig.must_contain">
+            <input type="text" class="form-control" placeholder="Must Contain Word" id="name2" name="name2" [(ngModel)]="newConfig.productNameMustContainWord">
         </div>
     </div>
     <div class="form-row">
         <div class="form-group col-md-12">
             <label for="name3">Must Contain One Word</label>
-            <input type="text" class="form-control" placeholder="Must Contain At Least One Word" id="name3" name="name3" [(ngModel)]="newConfig.must_contain_one">
+            <input type="text" class="form-control" placeholder="Must Contain At Least One Word" id="name3" name="name3" [(ngModel)]="newConfig.productNameMustContainAtLeastOneWordFromString">
         </div>
     </div>
     <div class="form-row">
@@ -29,11 +29,11 @@
         </div>
         <div class="form-group col-md-4">
             <label for="zip">Zip</label>
-            <input type="text" class="form-control" placeholder="Zip" id="zip" name="zip" [(ngModel)]="newConfig.zip">
+            <input type="number" class="form-control" placeholder="Zip" id="zip" name="zip" [(ngModel)]="newConfig.localZip">
         </div>
         <div class="form-group col-md-4">
             <label for="distance">Distance</label>
-            <input type="text" class="form-control" placeholder="Distance" id="distance" name="distance" [(ngModel)]="newConfig.distance">
+            <input type="number" class="form-control" placeholder="Distance" id="distance" name="distance" [(ngModel)]="newConfig.maxDistance">
         </div>
     </div>
     <div class="form-row">
@@ -43,11 +43,11 @@
         </div>
         <div class="form-group col-md-4">
             <label for="low">Low</label>
-            <input type="text" class="form-control" placeholder="Low" id="low" name="low" [(ngModel)]="newConfig.low">
+            <input type="number" class="form-control" placeholder="Low" id="low" name="low" [(ngModel)]="newConfig.validLowPrice">
         </div>
         <div class="form-group col-md-4">
             <label for="high">High</label>
-            <input type="text" class="form-control" placeholder="High" id="high" name="high" [(ngModel)]="newConfig.high">
+            <input type="number" class="form-control" placeholder="High" id="high" name="high" [(ngModel)]="newConfig.validHighPrice">
         </div>
     </div>
     <div class="form-row minor-margin">
@@ -67,13 +67,14 @@
             <tr>
                 <th>Active</th>
                 <th>Name</th>
-                <th>Must Contain</th>
-                <th>Must Contain One</th>
+                <th>Must Contain the Word</th>
+                <th>Includes at Least One Word From</th>
                 <th>City</th>
                 <th>Zip</th>
                 <th>Distance</th>
                 <th>Low</th>
                 <th>High</th>
+                <th></th>
                 <th></th>
                 <th></th>
             </tr>
@@ -88,16 +89,17 @@
                         <span>Inactive</span>
                     </button>
                 </td>
-                <th scope="row" class="align-middle">{{config.name}}</th>
-                <td class="align-middle">{{config.must_contain}}</td>
-                <td class="align-middle">{{config.must_contain_one}}</td>
+                <th scope="row" class="align-middle">{{config.productName}}</th>
+                <td class="align-middle">{{config.productNameMustContainWord}}</td>
+                <td class="align-middle">{{config.productNameMustContainAtLeastOneWordFrom}}</td>
                 <td class="align-middle">{{config.city}}</td>
-                <td class="align-middle">{{config.zip}}</td>
-                <td class="align-middle">{{config.distance}}</td>
-                <td class="align-middle">{{config.low}}</td>
-                <td class="align-middle">{{config.high}}</td>
-                <td class="align-middle"><button style="font-size:8pt;" (click)="edit(config)" class="btn btn-outline-success">Edit</button></td>
-                <td class="align-middle"><button style="font-size:8pt;" (click)="remove(config)" class="btn btn-outline-danger">Remove</button></td>
+                <td class="align-middle">{{config.localZip}}</td>
+                <td class="align-middle">{{config.maxDistance}}</td>
+                <td class="align-middle">{{config.validLowPrice}}</td>
+                <td class="align-middle">{{config.validHighPrice}}</td>
+                <td class="align-middle"><button style="font-size:8pt;" (click)="edit(config)" class="btn btn-outline-success btn-sm">Edit</button></td>
+                <td class="align-middle"><button style="font-size:8pt;" (click)="clone(config)" class="btn btn-outline-secondary btn-sm">Clone</button></td>
+                <td class="align-middle"><button style="font-size:8pt;" (click)="remove(config)" class="btn btn-outline-danger btn-sm">Remove</button></td>
             </tr>
       </tbody>
     </table>
