@@ -27,13 +27,16 @@ export class AppComponent {
 
   // Information Visible on App.Component.html
   products: any;
+  queries: any;         // newer storage of products by query
   lastUpdated: Date;
   isRefreshing: Boolean;
   addedProductsMsg: string;
   statusMsg: string;
   editingConfig: Boolean; // Show/Hide Config Component
 
+
   constructor() {
+    this.localStorageService = new LocalStorageService();
     /*
     this.httpDomService = new HttpdomService();
     this.nodeProcessorService = new NodeProcessorService();
@@ -44,6 +47,8 @@ export class AppComponent {
   }
 
   async ngOnInit() {
+
+    this.queries = this.localStorageService.getQueriesFromStorage() ? this.localStorageService.getQueriesFromStorage() : [];
     /*
     this.products = [];
     this.products = this.localStorageService.getProductsFromStorage();
@@ -101,38 +106,24 @@ export class AppComponent {
    * Initiates data retrieval 
    */
   public async refreshProducts() {
-    /*
-    console.log('Refreshing Products...');
+  
     this.addedProductsMsg = null, this.isRefreshing = true, this.statusMsg = 'Refreshing Products...';
+    this.queries = [];
 
-    let existingProducts = this.localStorageService.getProductsFromStorage();
-    let newProducts = await this.getNewProducts();  // A list of new products, not previously saved 
-    if (newProducts.length > 0) this.addedProductsMsg = 'Added ' + newProducts.length + ' New Product(s)!';
-
-    this.products =  existingProducts ? existingProducts.concat(newProducts) : newProducts;
-    this.products = this.products.sort((a, b) => (a.price > b.price) ? 1 : -1);
-    for (let product of this.products) product.age = Math.abs( Date.parse(product.createdDate) - new Date().getTime()) / 36e5;
-
-    this.localStorageService.storeData(this.products);
-
-    this.statusMsg = null;
-    this.isRefreshing = false;
-    */
-
-    this.addedProductsMsg = null, this.isRefreshing = true, this.statusMsg = 'Refreshing Products...';
-    let newlyRetrievedProducts = [];
     // For each configured product, do a product retrieval 
     try {
-
       for (const searchConfig of new LocalStorageService().getActiveSearchConfigs()) {
+        // Perform a data retrieval 
         let retrievedProducts = await new ProductRetrieverService().retrieveProducts(searchConfig, new SitesConfigService(searchConfig).getSitesToReview() );
-        newlyRetrievedProducts = newlyRetrievedProducts.concat(retrievedProducts);
-        this.addedProductsMsg = 'Added ' + newlyRetrievedProducts.length + ' New Products!'
+
+        // Construct a 'query' object 
+        retrievedProducts = retrievedProducts.sort((a, b) => (a.price > b.price) ? 1 : -1);
+        let newlyConstructedQuery = {productName: searchConfig.productName, products: retrievedProducts};
+        this.queries = this.queries.concat(newlyConstructedQuery);
       }
-      console.log(newlyRetrievedProducts);
+
       this.addedProductsMsg = null, this.isRefreshing = false, this.statusMsg = null;
-      this.products = newlyRetrievedProducts.sort((a, b) => (a.price > b.price) ? 1 : -1);
-       //this.localStorageService.storeData(newlyRetrievedProducts);
+      this.localStorageService.saveQueriesToStorage(this.queries);
 
     } catch (exception) {
       console.log(exception.message);

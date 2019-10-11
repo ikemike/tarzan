@@ -62,22 +62,15 @@
 
   <div style="margin-top:20px;">
     <div>
-      <!--
-      <h2>Configuration | Current Settings</h2>
-      <p>Product Name: {{ SEARCHSETTINGS.productName }}</p> 
-      <p>Price Between: {{ SEARCHSETTINGS.currencySymbol }}{{ VALIDATIONSETTINGS.validLowPrice }} - {{ SEARCHSETTINGS.currencySymbol }}{{ VALIDATIONSETTINGS.validHighPrice }}</p> 
-      <p>City: {{ SEARCHSETTINGS.city }}</p> 
-      <p>Zip: {{ SEARCHSETTINGS.localZip }}</p> 
-      -->
       <p *ngIf="!lastUpdated"><br/></p>
       <p *ngIf="lastUpdated">Last Updated: {{ lastUpdated }}</p>
       <br/>
-      <button (click)="refreshProducts()" *ngIf="!editingConfig" [disabled]="isRefreshing" class="btn btn-primary">Refresh Products</button>
+     
     </div>
   </div>
 
   <!-- Status Notifications -->
-  <div style="height:48px;width:100%;margin-top:10px;">
+  <div style="width:100%;">
       <span><p *ngIf="addedProductsMsg">
         <ngb-alert [dismissible]="false" type="success">
             {{ addedProductsMsg }}
@@ -91,32 +84,41 @@
         </p>
   </div>
 
-  <!-- Main Products Display -->
-  <div *ngIf="!editingConfig">
-    <div style="margin-top:10px;margin-bottom:10px;">
-      <h2>Products</h2>
-      <div *ngIf="products">
-        <table class="table table-sm">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Price</th>
-              <th>Link</th>
-              <th>Added</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let product of products" [class.table-success]="product.age < 1">
-              <th scope="row" title="{{product.name}}">{{ product.name.length > 86 ? product.name.substring(0, 86) + '...' : product.name }}</th>
-              <td>${{ product.price }}</td>
-              <td><a href="{{ product.hyperlink }}">{{ product.hyperlink.substring(0, 40) + '...'}}</a></td>
-              <td>{{ product.createdDate |  date:'MM/dd/yyyy' }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+<button (click)="refreshProducts()" *ngIf="!editingConfig" [disabled]="isRefreshing" class="btn btn-primary">Refresh Products</button>
+<div *ngIf="!editingConfig">
+  <div style="margin-top:10px;margin-bottom:10px;">
+    <h2>Products</h2>
+      <ngb-tabset *ngIf="queries">
+
+        <ngb-tab *ngFor="let query of queries" title="{{query.productName}} ({{query.products[0].configUsed.city}})">
+
+          <ng-template ngbTabContent>
+              <table class="table table-hover table-sm" style="width:60vw">
+                <thead>
+                  <tr>
+                    <th style="width:30vw">Name</th>
+                    <th style="width:5vw">Price</th>
+                    <th style="width:15vw">Link</th>
+                    <th style="width:5vw">Added</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let product of query.products" [class.table-success]="product.age < 1">
+                    <th style="width:30vw" scope="row" title="{{product.name}}">{{ product.name.length > 86 ? product.name.substring(0, 86) + '...' : product.name }}</th>
+                    <td style="width:5vw">${{ product.price }}</td>
+                    <td style="width:15vw"><a href="{{product.hyperlink}}" title="{{product.hyperlink}}">{{ product.hyperlink.substring(0, 40) + '...'}}</a></td>
+                    <td style="width:5vw">{{ product.createdDate |  date:'MM/dd/yyyy' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </ng-template>
+
+          </ngb-tab>
+         
+      </ngb-tabset>
     </div>
   </div>
+  
 
   <!-- Configuration Component -->
   <app-product-config *ngIf="editingConfig" (handleSaveEvent)="editingConfig = $event"></app-product-config>

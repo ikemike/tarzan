@@ -10,13 +10,14 @@ export class LocalStorageService {
   /**
    * Store data via localstorage
    */
-  public storeData(products: any) {
-    window.localStorage.setItem('products', JSON.stringify(products));
-    window.localStorage.setItem('last-updated', JSON.stringify(new Date()));
+  
+  public getQueriesFromStorage() {
+    return JSON.parse(window.localStorage.getItem('queries'));
   }
 
-  public getProductsFromStorage() {
-    return JSON.parse(window.localStorage.getItem('products'));
+  public saveQueriesToStorage(queries: any) {
+    window.localStorage.setItem('queries', JSON.stringify(queries));
+    window.localStorage.setItem('last-updated', JSON.stringify(new Date()));
   }
 
   public getLastUpdatedDate() {

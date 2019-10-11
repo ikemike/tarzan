@@ -58,11 +58,13 @@
     </div>
 </form>
 
-<button (click)="createNewConfigAction()" class="btn btn-primary minor-margin" *ngIf="!addingNew && !editingExisting">Create a New Configuration</button>
+<button (click)="createNewConfigAction()" class="btn btn-primary minor-margin" 
+    style="display: flex;margin: 10px auto;flex-direction: column;align-items: center;" *ngIf="!addingNew && !editingExisting">Create a New Configuration</button>
 
-<h2 *ngIf="searchConfigs">Current Configuration</h2>
+<h2 *ngIf="searchConfigs" style="margin-top:10px;">Current Configuration</h2>
+
 <div *ngIf="searchConfigs">
-    <table class="table table-sm">
+    <table class="table table-sm" style="width:60vw">
         <thead>
             <tr>
                 <th>Active</th>
