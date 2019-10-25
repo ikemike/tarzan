@@ -64,7 +64,7 @@
 <h2 *ngIf="searchConfigs" style="margin-top:10px;">Current Configuration</h2>
 
 <div *ngIf="searchConfigs">
-    <table class="table table-sm" style="width:60vw">
+    <table class="table table-sm" style="width:80vw">
         <thead>
             <tr>
                 <th>Active</th>
@@ -91,7 +91,7 @@
                         <span>Inactive</span>
                     </button>
                 </td>
-                <th scope="row" class="align-middle">{{config.productName}}</th>
+                <th scope="row" class="align-middle">{{config.productName}} {{config.id}}</th>
                 <td class="align-middle">{{config.productNameMustContainWord}}</td>
                 <td class="align-middle">{{config.productNameMustContainAtLeastOneWordFrom}}</td>
                 <td class="align-middle">{{config.city}}</td>

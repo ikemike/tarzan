@@ -113,6 +113,7 @@ export class AppComponent {
     // For each configured product, do a product retrieval 
     try {
       for (const searchConfig of new LocalStorageService().getActiveSearchConfigs()) {
+
         // Perform a data retrieval 
         let retrievedProducts = await new ProductRetrieverService().retrieveProducts(searchConfig, new SitesConfigService(searchConfig).getSitesToReview() );
 

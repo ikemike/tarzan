@@ -93,9 +93,10 @@
         <ngb-tab *ngFor="let query of queries" title="{{query.productName}} ({{query.products[0].configUsed.city}})">
 
           <ng-template ngbTabContent>
-              <table class="table table-hover table-sm" style="width:60vw">
+              <table class="table table-hover table-sm" style="width:70vw">
                 <thead>
                   <tr>
+                    <th style="width:10vw"></th>
                     <th style="width:30vw">Name</th>
                     <th style="width:5vw">Price</th>
                     <th style="width:15vw">Link</th>
@@ -104,6 +105,7 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let product of query.products" [class.table-success]="product.age < 1">
+                    <th><img style="height:50px" src="{{product.img}}"/></th>
                     <th style="width:30vw" scope="row" title="{{product.name}}">{{ product.name.length > 86 ? product.name.substring(0, 86) + '...' : product.name }}</th>
                     <td style="width:5vw">${{ product.price }}</td>
                     <td style="width:15vw"><a href="{{product.hyperlink}}" title="{{product.hyperlink}}">{{ product.hyperlink.substring(0, 40) + '...'}}</a></td>

@@ -31,7 +31,7 @@ export class ProductConfigComponent implements OnInit {
     // Retrieve current config settings from local storage
     this.searchConfigs = new LocalStorageService().getSearchConfigs();
     this.newConfig = {};
-    this.sortEntries();
+    if (this.searchConfigs) this.sortEntries();
   }
 
   /**
@@ -48,7 +48,7 @@ export class ProductConfigComponent implements OnInit {
 
     if (this.searchConfigs) {
       this.searchConfigs = this.searchConfigs.filter(config => config != this.newConfig); // If the config option previously existed, remove it
-      this.newConfig.id = this.searchConfigs.length + 1;
+      this.newConfig.id = this.newConfig.id ? this.newConfig.id : this.searchConfigs.length + 1;
       this.searchConfigs = this.searchConfigs.concat(this.newConfig);
     } else {
       this.newConfig.id = 1;
