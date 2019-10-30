@@ -90,8 +90,8 @@
     <h2>Products</h2>
       <ngb-tabset *ngIf="queries">
 
-        <ngb-tab *ngFor="let query of queries" title="{{query.productName}} ({{query.products[0].configUsed.city}})">
-
+        <ngb-tab *ngFor="let query of queries" title="{{query.productName}}">
+            <!-- ({{query.products[0].configUsed.city}}) -->
           <ng-template ngbTabContent>
               <table class="table table-hover table-sm" style="width:70vw">
                 <thead>

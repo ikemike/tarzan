@@ -30,9 +30,12 @@ export class ProductConstructorService {
       
       let hyperlink = element.querySelector('a') ? element.querySelector('a').href.replace('http://localhost:4200',websiteName) : '';
       let distance = element.querySelector(nbResponse.ebayDistanceClass) ? element.querySelector(nbResponse.ebayDistanceClass).textContent.replace(',','').match(/\d+/)[0] : '';
-      let productImg = element.querySelector('img') ? element.querySelector('img').src : 
-        document.querySelector('img') ? document.querySelector('img').src : '';
-      
+      let productImg = element.querySelector('img') 
+        ? element.querySelector('img').src 
+        : element.querySelector('.result-image').getAttribute('data-ids') 
+          ? 'https://images.craigslist.org/' + element.querySelector('.result-image').getAttribute('data-ids') .substring(2,19) + '_300x300.jpg'
+          : '';
+
       constructedProducts.push({
         name: name,
         price: price,

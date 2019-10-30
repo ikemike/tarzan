@@ -127,8 +127,8 @@ export class AppComponent {
       this.localStorageService.saveQueriesToStorage(this.queries);
 
     } catch (exception) {
-      console.log(exception.message);
       this.addedProductsMsg = null, this.isRefreshing = false, this.statusMsg = 'Exception: ' + exception.message + ' | Check console log for details';
+      throw exception;
     }
 
   }
