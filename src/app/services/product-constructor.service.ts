@@ -15,6 +15,7 @@ export class ProductConstructorService {
   public buildProducts(nbResponse: any, documentData: any, websiteUrl: string): any {
     let constructedProducts = [];
     const containerElements: any = documentData.querySelectorAll(nbResponse.containerClass);
+    //const websiteFavicon: string = documentData.querySelector("link[rel*='icon']") ? documentData.querySelector("link[rel*='icon']").href : '';
     let websiteName = websiteUrl.substring(0, websiteUrl.indexOf('.com') !== -1 ? websiteUrl.indexOf('.com') + 4 : websiteUrl.indexOf('.org') + 4);
     websiteName = websiteName.replace('mobile.', '');
 

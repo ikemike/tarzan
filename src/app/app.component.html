@@ -17,7 +17,6 @@
           .cls-1 {
             fill: none;
           }
-
           .cls-2 {
             fill: #ffffff;
           }
@@ -30,12 +29,9 @@
   </a>
 </div>
 
-
-
 <div style="position:absolute;right:48px;top:8px;">
   <button (click)="editingConfig = true;" *ngIf="!editingConfig" class="btn btn-outline-light">Edit Config</button>
 </div>
-
 
 <div class="content" role="main">
 
@@ -59,16 +55,6 @@
 
   </div>
 
-
-  <div style="margin-top:20px;">
-    <div>
-      <p *ngIf="!lastUpdated"><br/></p>
-      <p *ngIf="lastUpdated">Last Updated: {{ lastUpdated }}</p>
-      <br/>
-     
-    </div>
-  </div>
-
   <!-- Status Notifications -->
   <div style="width:100%;">
       <span><p *ngIf="addedProductsMsg">
@@ -85,6 +71,7 @@
   </div>
 
 <button (click)="refreshProducts()" *ngIf="!editingConfig" [disabled]="isRefreshing" class="btn btn-primary">Refresh Products</button>
+
 <div *ngIf="!editingConfig">
   <div style="margin-top:10px;margin-bottom:10px;">
     <h2>Products</h2>
@@ -96,7 +83,7 @@
               <table class="table table-hover table-sm" style="width:70vw">
                 <thead>
                   <tr>
-                    <th style="width:10vw"></th>
+                    <th style="width:1vw"></th>
                     <th style="width:30vw">Name</th>
                     <th style="width:5vw">Price</th>
                     <th style="width:15vw">Link</th>
@@ -105,10 +92,12 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let product of query.products" [class.table-success]="product.age < 1">
-                    <th><img style="height:50px" src="{{product.img}}"/></th>
+                    <th><img style="height:120px;width:120px;" src="{{product.img}}"/></th>
                     <th style="width:30vw" scope="row" title="{{product.name}}">{{ product.name.length > 86 ? product.name.substring(0, 86) + '...' : product.name }}</th>
                     <td style="width:5vw">${{ product.price }}</td>
-                    <td style="width:15vw"><a href="{{product.hyperlink}}" title="{{product.hyperlink}}">{{ product.hyperlink.substring(0, 40) + '...'}}</a></td>
+                    <td style="width:15vw">
+                      <a href="{{product.hyperlink}}" title="{{product.hyperlink}}">{{ product.hyperlink.substring(0, 40) + '...'}}</a>
+                    </td>
                     <td style="width:5vw">{{ product.createdDate |  date:'MM/dd/yyyy' }}</td>
                   </tr>
                 </tbody>

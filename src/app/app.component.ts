@@ -13,118 +13,57 @@ import { ProductConfigComponent } from './product-config/product-config.componen
 })
 export class AppComponent {
 
-
   title = 'tarzan';
-  SEARCHSETTINGS: any;
-  VALIDATIONSETTINGS: any;
-  SITESTOREVIEW: any;
-
-  httpDomService;
-  nodeProcessorService;
-  productConstructorService;
-  productValidatorService;
   localStorageService;
 
   // Information Visible on App.Component.html
-  products: any;
   queries: any;         // newer storage of products by query
-  lastUpdated: Date;
   isRefreshing: Boolean;
   addedProductsMsg: string;
   statusMsg: string;
-  editingConfig: Boolean; // Show/Hide Config Component
-
 
   constructor() {
     this.localStorageService = new LocalStorageService();
-    /*
-    this.httpDomService = new HttpdomService();
-    this.nodeProcessorService = new NodeProcessorService();
-    this.productConstructorService = new ProductConstructorService();
-    this.productValidatorService = new ProductValidatorService();
-    this.localStorageService = new LocalStorageService();
-    */
   }
 
   async ngOnInit() {
-
     this.queries = this.localStorageService.getQueriesFromStorage() ? this.localStorageService.getQueriesFromStorage() : [];
-    /*
-    this.products = [];
-    this.products = this.localStorageService.getProductsFromStorage();
-    this.lastUpdated = this.localStorageService.getLastUpdatedDate();
-    setInterval(()=>this.refreshProducts(), 1200000);
-    */
+    //setInterval(()=>this.refreshProducts(), 1200000);
   }
 
-  handleEditingConfigEvent($event) {
-    console.log($event);
-    this.editingConfig = $event;
-  }
-
-
-  /**
-   * 1. Performs an initial HTTP callout to the website, saving the returned HTML document
-   * 2. Performs simple node identification based on element content like price
-   * 3. Construct a JSON representation of the 
-   */
-  public async retrievePageData() {
-    /*
-    this.lastUpdated = new Date();
-    let newProducts = [];
-    
-    // Loop through each site, configured in tarzan-config.ts 
-    for (const site of this.SITESTOREVIEW) {
-      newProducts = newProducts.concat(await this.getProductsFromSite(site));
-    }
-    newProducts = newProducts.sort((a, b) => (a.price > b.price) ? 1 : -1);
-
-    return newProducts;
-    */
-  }
-
-
-  /**
-   * Given a website, retrieve selectors for product information, process the nodes for data, construct products. 
-   * @param website A website URL
-   */
-  public async getProductsFromSite(website: string) {
-    /*
-    let siteDom = await this.httpDomService.getDocument(website);                             // 1. Peform an HTTP callout to the website
-    let processedNodeData = this.nodeProcessorService.performNodeIdentification(siteDom);     // 2. Analyze the website DOM and conduct simple node identification for product name, price, and container 
-    //console.log(processedNodeData);
-    let products = this.productConstructorService.buildProducts(processedNodeData, siteDom, website);  // 3. Construct products based on the nodes identified
-    //console.log(products);
-    let validatedProducts = await this.productValidatorService.validateProducts(products);          // 4. Process each product and make sure it meets defined criteria
-    this.statusMsg = `Validated: ${validatedProducts.length}/${products.length} products from ${website}`;
-    return validatedProducts;
-    */
-  }
 
   /**
    * Called via on-click action in app.component.html
    * Initiates data retrieval 
    */
   public async refreshProducts() {
-  
     this.addedProductsMsg = null, this.isRefreshing = true, this.statusMsg = 'Refreshing Products...';
     this.queries = [];
+    this.queries = await this.getNewQueries();
 
     // For each configured product, do a product retrieval 
     try {
-      for (const searchConfig of new LocalStorageService().getActiveSearchConfigs()) {
+      let newQueryData = await this.getNewQueries();
+      let existingQueryData = this.localStorageService.getQueriesFromStorage();
+      for (let newQ of newQueryData) {
+        let existingProducts = existingQueryData.filter(newQ.productName)
+        if (newQ.products) {
+          // If the query returned products
+          let newProducts = this.getOnlyNewAndUpdatedProducts(newQ.products);
 
-        // Perform a data retrieval 
-        let retrievedProducts = await new ProductRetrieverService().retrieveProducts(searchConfig, new SitesConfigService(searchConfig).getSitesToReview() );
 
-        // Construct a 'query' object 
-        retrievedProducts = retrievedProducts.sort((a, b) => (a.price > b.price) ? 1 : -1);
-        let newlyConstructedQuery = {productName: searchConfig.productName, products: retrievedProducts};
-        this.queries = this.queries.concat(newlyConstructedQuery);
+        }
       }
 
-      this.addedProductsMsg = null, this.isRefreshing = false, this.statusMsg = null;
+      //let filteredNewOrUpdatedResults = this.getOnlyNewAndUpdatedProducts(await this.getNewQueries());  // Return a list of only new data
+      //console.log(filteredNewOrUpdatedResults);
+      //if (filteredNewOrUpdatedResults.length > 0) this.queries = this.queries.concat(filteredNewOrUpdatedResults);
+
+      //this.queries = newQueries;
       this.localStorageService.saveQueriesToStorage(this.queries);
+      
+
+      this.addedProductsMsg = null, this.isRefreshing = false, this.statusMsg = null;
 
     } catch (exception) {
       this.addedProductsMsg = null, this.isRefreshing = false, this.statusMsg = 'Exception: ' + exception.message + ' | Check console log for details';
@@ -134,32 +73,49 @@ export class AppComponent {
   }
 
   /**
-  * Do a full retrieve of products. Compare those already in the cache.
-  * Return only products that were not found in the cache. 
-  * @returns  new products
-  */
-  public async getNewProducts() {
-    /*
-    let newProductsList = [];
-    let existingProducts = this.localStorageService.getProductsFromStorage();
-    let newProducts = await this.retrievePageData();
+   * Get new products!  
+   */
+  public async getNewQueries() {
+    let newlyRetrievedProducts = [];
 
-    if (existingProducts) {
-      let existingProductKeys = existingProducts.map(product => product.name + product.price + product.hyperlink.substring(0, 20) );
-      let existingHyperlinks = existingProducts.map(product => product.hyperlink);
+    for (const searchConfig of new LocalStorageService().getActiveSearchConfigs()) {
+      let retrievedProducts = await new ProductRetrieverService().retrieveProducts(searchConfig, new SitesConfigService(searchConfig).getSitesToReview());
+      retrievedProducts = retrievedProducts.sort((a, b) => (parseFloat(a.price) > parseFloat(b.price)) ? 1 : -1);
+      newlyRetrievedProducts = newlyRetrievedProducts.concat({
+        productName: searchConfig.productName, products: retrievedProducts
+      });
+    }
 
-      for (const product of newProducts) {
-        let newProductKey = product.name + product.price + product.hyperlink.substring(0, 20);
-        
-        if (!existingProductKeys.includes(newProductKey) && !existingHyperlinks.includes(product.hyperlink)) {
-          newProductsList.push(product);
-        }
-      }
-      return newProductsList;
-    } 
-    return newProducts;
-    */
+    return newlyRetrievedProducts;
   }
-  
+
+  /**
+   * Return a list of only new or updated products
+   * @param products 
+   */
+  public getOnlyNewAndUpdatedProducts(newlyCompletedQueries) {
+    // 1.) Compare existing products
+    let existingQueries = this.localStorageService.getQueriesFromStorage();
+    //let existingProductUrlz = existingProducts.products.map((p) => p.hyperlink.toLowerCase());
+    //let newResults = newlyCompletedQueries.filter(q => q.products.filter(p => !existingProductUrls.includes(p.hyperlink))); 
+
+    let existingProductUrls = [];
+    if (existingQueries) {
+      existingQueries.forEach(q => { if (q.products) { q.products.forEach(p => existingProductUrls.push(p.hyperlink.toLowerCase())) } });
+    }
+    
+
+    let validNewQueries = [];
+    for (let q of newlyCompletedQueries) {
+      let validNewProducts = [];
+      for (let p of q.products) {
+        if (!existingProductUrls.includes(p.hyperlink.toLowerCase())) validNewProducts.push(p);
+      }
+      q.products = validNewProducts;
+      validNewQueries.push(q);
+    }
+    return validNewQueries;
+
+  }
 
 }
